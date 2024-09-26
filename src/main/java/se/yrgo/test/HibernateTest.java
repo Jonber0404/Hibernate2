@@ -52,15 +52,14 @@ public class HibernateTest
 		//UPPGIFT 1
 		System.out.println("Uppgift1");
 		List<String> studentNames = em.createQuery(
-						"select s.name from Student s where s in " +
-								"(select distinct stu from Tutor t join t.teachingGroup stu join t.subjectsToTeach sub where sub.subjectName = :subjectName)"
-				)
-				.setParameter("subjectName", "Science")
+						"select st.name from Tutor t join t.teachingGroup st " +
+								"where (select s from Subject s where s.subjectName = 'Science') member of t.subjectsToTeach", String.class)
 				.getResultList();
 
 		for (String studentName : studentNames) {
 			System.out.println(studentName);
 		}
+
 
 		//UPPGIFT 2
 		System.out.println("Uppgift2");
@@ -86,7 +85,8 @@ public class HibernateTest
 
 		//UPPGIFT 5
 		System.out.println("Uppgift5");
-		List<Tutor> tutors = em.createQuery("select t from Tutor t where t.salary > 10000", Tutor.class).getResultList();
+		List<Tutor> tutors = em.createNamedQuery("findTutorsWithHighSalary", Tutor.class)
+				.getResultList();
 
 		for (Tutor tutor : tutors) {
 			System.out.println(tutor);
